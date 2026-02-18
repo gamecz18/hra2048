@@ -12,8 +12,7 @@ namespace hra2048.Models
         private readonly int _simulationsPerMove;
         private readonly int _maxStepsPerSimulation;
 
-        /// <param name="simulationsPerMove">Počet rolloutů na každý možný tah</param>
-        /// <param name="maxStepsPerSimulation">Max kroků v jednom rolloutu (0 = neomezeno)</param>
+        
         public MonteCarloSolverCPU(int simulationsPerMove = 100, int maxStepsPerSimulation = 200)
         {
             _simulationsPerMove = simulationsPerMove;
@@ -71,7 +70,7 @@ namespace hra2048.Models
                 }
             }
 
-            OnProgress?.Invoke($"→ Nejlepší tah: {bestMove}");
+            OnProgress?.Invoke($"Nejlepší tah: {bestMove}");
             return bestMove;
         }
     }

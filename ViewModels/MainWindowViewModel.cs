@@ -124,7 +124,7 @@ namespace hra2048.ViewModels
         [RelayCommand]
         private async Task RunMonteCarloGPU()
         {
-            await RunSolverBenchmark(new MonteCarloSolverGPU(20, 100));
+            await RunSolverBenchmark(new MonteCarloSolverGPU(200));
         }
         [RelayCommand]
         private async Task RunMonteCarlo()
@@ -145,7 +145,7 @@ namespace hra2048.ViewModels
                 ("Random", new RandomSolver()),
                 ("Own Strategy", new OwnSolver()),
                 ("Monte Carlo CPU", new MonteCarloSolverCPU(100, 200)),
-                //("Monte Carlo GPU", new MonteCarloSolverGPU(20, 100))
+                ("Monte Carlo GPU", new MonteCarloSolverGPU(202))
              };
             List<(string Name, SolverSummary Summary)> summaries = new List<(string Name, SolverSummary Summary)>();
 
