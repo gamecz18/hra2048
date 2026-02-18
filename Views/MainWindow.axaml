@@ -1,0 +1,126 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:hra2048.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="750"
+        x:Class="hra2048.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="2048 AI Solver"
+        Width="900" Height="750"
+        KeyDown="OnKeyDown">
+    
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid ColumnDefinitions="Auto, *" Margin="20">
+        
+        <!-- LEVÁ STRANA - Hra -->
+        <StackPanel Grid.Column="0" Width="420">
+            
+            <!-- Hlavička -->
+            <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,20">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="2048" FontSize="48" FontWeight="Bold" Foreground="#776e65"/>
+                    <TextBlock Text="{Binding StatusText}" FontSize="16" Foreground="#f67c5f"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                    <Border Background="#bbada0" CornerRadius="5" Padding="15,5">
+                        <StackPanel>
+                            <TextBlock Text="SCORE" Foreground="#eee4da"  FontSize="12" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding Score}" Foreground="White" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    <Button Command="{Binding NewGameCommand}" Content="New" Background="#8f7a66" Foreground="White" FontWeight="Bold" Height="50" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Hrací plocha -->
+            <Border Background="#bbada0" CornerRadius="6" Padding="10">
+                <ItemsControl ItemsSource="{Binding Tiles}" Width="400" Height="400">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="4" Columns="4"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding Color}" CornerRadius="3" Margin="5">
+                                <TextBlock Text="{Binding Text}" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center" 
+                                           FontSize="32" 
+                                           FontWeight="Bold" 
+                                           Foreground="#776e65"/>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+            
+            <!-- Ovládání klávesnicí info -->
+            <TextBlock Text="Ovládání: ← ↑ ↓ →" HorizontalAlignment="Center" Margin="0,10,0,0" Foreground="#776e65"/>
+            
+        </StackPanel>
+
+        <!-- PRAVÁ STRANA - Benchmark -->
+        <Border Grid.Column="1" Background="#faf8ef" CornerRadius="6" Margin="20,0,0,0" Padding="15">
+            <Grid RowDefinitions="Auto, Auto, Auto, *">
+                
+                <!-- Nadpis -->
+                <TextBlock Grid.Row="0" Text="Solver Benchmark" FontSize="24" FontWeight="Bold" Foreground="#776e65" Margin="0,0,0,15"/>
+                
+                <!-- Tlačítka solverů -->
+                <StackPanel Grid.Row="1" Orientation="Vertical" Spacing="8">
+                    <TextBlock Text="Spustit jednotlivě (10 her):" FontWeight="Bold" Foreground="#776e65"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <Button Command="{Binding RunRandomCommand}" Content="▶ Random" 
+                                Background="#8f7a66" Foreground="White" FontWeight="Bold" Margin="0,0,8,8" Padding="12,8"
+                                IsEnabled="{Binding IsNotRunning}"/>
+                        <Button Command="{Binding RunOwnCommand}" Content="▶ Vlastní" 
+                                Background="#f67c5f" Foreground="White" FontWeight="Bold" Margin="0,0,8,8" Padding="12,8"
+                                IsEnabled="{Binding IsNotRunning}"/>
+                        <Button Command="{Binding RunMonteCarloCommand}" Content="▶ MonteCarlo" 
+                                Background="#edc22e" Foreground="White" FontWeight="Bold" Margin="0,0,8,8" Padding="12,8"
+                                IsEnabled="{Binding IsNotRunning}"/>
+                        <Button Command="{Binding SaveCommand}" Background="#edc22e" Foreground="White"  IsEnabled="{Binding IsNotRunning}" Content="Uložit do CSV"  FontWeight="Bold" Margin="0,0,8,8" Padding="12,8"></Button>
+                    </WrapPanel>
+                    
+                    <Separator Margin="0,5"/>
+                    
+                    <Button Command="{Binding RunAllSolversCommand}" Content="▶▶ Spustit všechny solvery" 
+                            Background="#776e65" Foreground="White" FontWeight="Bold" Padding="15,10"
+                            HorizontalAlignment="Stretch"
+                            IsEnabled="{Binding IsNotRunning}"/>
+                    
+                    <Button Command="{Binding ClearResultsCommand}" Content="🗑 Vymazat výsledky" 
+                            Background="#cdc1b4" Foreground="#776e65" FontWeight="Bold" Padding="10,6"
+                            HorizontalAlignment="Left" Margin="0,5,0,0"/>
+                </StackPanel>
+                
+                <!-- Progress -->
+                <StackPanel Grid.Row="2" Margin="0,15,0,10">
+                    <TextBlock Text="{Binding ProgressText}" FontWeight="Bold" Foreground="#f67c5f"/>
+                    <ProgressBar Value="{Binding ProgressValue}" Maximum="100" Height="8" Margin="0,5,0,0"
+                                 IsVisible="{Binding IsRunning}"/>
+                </StackPanel>
+                
+                <!-- Výsledky -->
+                <Border Grid.Row="3" Background="White" CornerRadius="4" Padding="10" BorderBrush="#cdc1b4" BorderThickness="1">
+                    <ScrollViewer>
+                       <SelectableTextBlock Text="{Binding ResultsText}" 
+                     FontFamily="Consolas, Courier New, monospace" 
+                     FontSize="11"
+                     Foreground="#333"
+                     TextWrapping="NoWrap"/>
+                    </ScrollViewer>
+                </Border>
+                
+            </Grid>
+        </Border>
+        
+    </Grid>
+
+</Window>
